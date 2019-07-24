@@ -1,3 +1,4 @@
+# Different endpoints for server, functions, and definitions for logic
 from flask import request
 from twilio.twiml.messaging_response import MessagingResponse
 from fitness_tracker import app

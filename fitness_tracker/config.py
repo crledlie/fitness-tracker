@@ -1,3 +1,4 @@
+# Application configuration; describes how we want to configure the file
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
