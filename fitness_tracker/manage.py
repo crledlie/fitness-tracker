@@ -1,4 +1,4 @@
-# Data management layer
+# Data management layer, checks that everything is okay and running
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
