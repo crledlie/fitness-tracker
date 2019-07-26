@@ -10,6 +10,9 @@ class User(db.Model):
     phone_number = db.Column(db.String(120), index=True, unique=True)
     # Does not need to be unique
     is_working_out = db.Column(db.Boolean)
+    email = db.Column(db.String, index=True)
+    # Knows the relationship between LoggedWorkout exists; Lazy load: only pulls in data...? (Google me)
+    logged_workouts = db.relationship('LoggedWorkout', backref='users', lazy=True)
 
     def __repr__(self):
         return '<User %r>' % (self.username)
@@ -27,3 +30,16 @@ class Workout(db.Model):
 
     def __repr__(self):
         return '<Workout %r>' % (self.workouts)    
+
+class LoggedWorkout(db.Model):
+    __tablename__ = 'loggedworkout'
+
+    id = db.Column(db.Integer, primary_key=True)
+    # Pulls user's id from User table using "db.Foreignkey"
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    # Uses Python's DateTime object to log the date and time
+    start_time = db.Column(db.DateTime)
+    end_time = db.Column(db.DateTime)
+
+    def __repr__(self):
+        return '<LoggedWorkout %r>' % (self.loggedworkout)    
