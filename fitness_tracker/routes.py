@@ -1,9 +1,11 @@
 # Different endpoints for server, functions, and definitions for logic
+import ipdb
+import datetime
 from flask import request
 from twilio.twiml.messaging_response import MessagingResponse
 from fitness_tracker import app
 # Imports User model from database
-from fitness_tracker.models import User
+from fitness_tracker.models import User, LoggedWorkout
 from fitness_tracker.manage import db
 
 # This points the app towards the ngrok URL and /sms specifically and tells it to put something on it by POSTing
@@ -26,20 +28,45 @@ def user():
         # response.message('Good to see you again username, starting your "message_body" workout now!', action='/endworkout', method='POST')     
         return str('Good to see you again!')
 # Boilerplate
-@app.route('/onboarding1', methods=['POST'])
-def onboarding1():
-    print(request.form)
-    number = request.form['From']
-    message_body = request.form['Body']
-    user = User(username = message_body, phone_number = number)
+@app.route('/onboarding', methods=['POST'])
+def onboarding():
+    name = request.form['name']
+    email = request.form['email']
+    number = request.form['number']
+    user = User(username = name, phone_number = number, email = email)
     db.session.add(user)
     db.session.commit()
-    response = MessagingResponse()
-    response.message('Good to meet you {}').format(message_body)
-    return str(response)
+    return str(user)
+
+@app.route('/workout', methods=['GET', 'POST'])
+def workout():
+    number = request.form['number']
+    user = User.query.filter_by(phone_number = number).first()
+    def check_workout_status(workout):
+        if workout.end_time is None:
+            return True
+        else:
+            return False
+    if request.method == 'GET':
+        return user.is_working_out
+
+    if request.method == 'POST':
+        workout = request.form['workout_type']
+        if user.is_working_out:
+            ipdb.set_trace()
+                # TODO: Should we use filter or filter_by from SQLalchemy?
+            active_workout=filter(check_workout_status, user.logged_workouts)
+            active_workout[0].end_time=datetime.datetime.now()
+                # TODO: Commit end_time change to db
+            return str('Workout ended')
+        else:
+            logged_workouts = LoggedWorkout(user_id = user.id, start_time = datetime.datetime.now())
+            db.session.add(logged_workouts)
+            db.session.commit()
+            return str('Starting workout')
 
 @app.route('/endworkout', methods=['POST'])
-def endworkout():
+def end_workout():
     print(request.form)
     response = MessagingResponse()
     response.message('Great workout! You worked out for x amount of time!')
