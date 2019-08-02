@@ -8,6 +8,7 @@ from fitness_tracker import app
 from fitness_tracker.models import User, LoggedWorkout
 from fitness_tracker.manage import db
 
+
 # This points the app towards the ngrok URL and /sms specifically and tells it to put something on it by POSTing
 # App.route - basis for app ; whenever anyone goes to this path it'll post the following...
 @app.route('/user', methods=['POST'])
