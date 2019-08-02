@@ -9,13 +9,14 @@ class User(db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     phone_number = db.Column(db.String(120), index=True, unique=True)
     # Does not need to be unique
-    is_working_out = db.Column(db.Boolean)
+    is_working_out = db.Column(db.Boolean,default=False)
     email = db.Column(db.String, index=True)
     # Knows the relationship between LoggedWorkout exists; Lazy load: only pulls in data...? (Google me)
     logged_workouts = db.relationship('LoggedWorkout', backref='users', lazy=True)
 
     def __repr__(self):
         return '<User %r>' % (self.username)
+
 
 class Workout(db.Model):
     __tablename__ = 'workouts'

@@ -2,6 +2,7 @@
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
+
 from fitness_tracker import app, db
 
 migrate = Migrate(app, db)
