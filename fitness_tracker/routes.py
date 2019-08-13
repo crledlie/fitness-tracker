@@ -43,26 +43,25 @@ def workout():
     number = request.form['number']
     user = User.query.filter_by(phone_number = number).first()
     print(user)
-    def check_workout_status(workout):
-        if workout.end_time is None:
-            return True
-        else:
-            return False
     if request.method == 'GET':
         return user.is_working_out
 
     if request.method == 'POST':
+        print("checking workout", user)
         if user.is_working_out:
-                # TODO: Should we use filter or filter_by from SQLalchemy?
+            print("User is working out")
                 # Find active work out status
-            active_workout=filter(check_workout_status, user.logged_workouts)
+            active_workout=LoggedWorkout.query.filter_by(end_time=None, user_id=user.id)
             print(active_workout[0])
             active_workout[0].end_time=datetime.datetime.now()
             print(active_workout[0])
+            db.session.add(active_workout)
             # function that commits end work out time
             db.session.commit()
             return str('Workout ended')
         else:
+            user.is_working_out=True
+            print("User is not working out", user.is_working_out)
             workout = request.form['workout_type']
             logged_workouts = LoggedWorkout(user_id = user.id, workout_type = workout, start_time = datetime.datetime.now())
             db.session.add(logged_workouts)
