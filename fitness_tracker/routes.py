@@ -43,6 +43,7 @@ def onboarding():
 def workout():
     number = request.form['number']
     user = User.query.filter_by(phone_number = number).first()
+    print(user)
     def check_workout_status(workout):
         if workout.end_time is None:
             return True
@@ -52,16 +53,20 @@ def workout():
         return user.is_working_out
 
     if request.method == 'POST':
-        workout = request.form['workout_type']
         if user.is_working_out:
             ipdb.set_trace()
                 # TODO: Should we use filter or filter_by from SQLalchemy?
+                # Find active work out status 
             active_workout=filter(check_workout_status, user.logged_workouts)
+            print(active_workout[0])
             active_workout[0].end_time=datetime.datetime.now()
-                # TODO: Commit end_time change to db
+            print(active_workout[0])
+            # function that commits end work out time
+            db.session.commit()
             return str('Workout ended')
         else:
-            logged_workouts = LoggedWorkout(user_id = user.id, start_time = datetime.datetime.now())
+            workout = request.form['workout_type']
+            logged_workouts = LoggedWorkout(user_id = user.id, workout_type = workout, start_time = datetime.datetime.now())
             db.session.add(logged_workouts)
             db.session.commit()
             return str('Starting workout')
@@ -69,6 +74,7 @@ def workout():
 @app.route('/endworkout', methods=['POST'])
 def end_workout():
     print(request.form)
-    response = MessagingResponse()
-    response.message('Great workout! You worked out for x amount of time!')
-    return str(response)
+    # response = MessagingResponse()
+    # response.message('Great workout! You worked out for x amount of time! Come back soon!')
+    # TODO: Update database; logged workout needs an end time 
+    return str('Great workout! You worked out for x amount of time! Come back soon!')

@@ -41,6 +41,7 @@ class LoggedWorkout(db.Model):
     # Uses Python's DateTime object to log the date and time
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
+    workout_type = db.Column(db.String(64))
 
     def __repr__(self):
         return '<LoggedWorkout %r>' % (self.loggedworkout)    
