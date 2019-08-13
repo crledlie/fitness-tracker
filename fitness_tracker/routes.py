@@ -1,5 +1,4 @@
 # Different endpoints for server, functions, and definitions for logic
-import ipdb
 import datetime
 from flask import request
 from twilio.twiml.messaging_response import MessagingResponse
@@ -21,12 +20,12 @@ def user():
     # response = MessagingResponse()
     user = User.query.filter_by(phone_number = number).first()
     print(user)
-    if user is None: 
+    if user is None:
         # Moves user to next page after text is sent
        # response.message('Welcome to the Fitness Tracker! What\'s your name?', action='/onboarding1', method='POST')
        return str('Welcome to the Fitness Tracker! What\'s your name?')
     else:
-        # response.message('Good to see you again username, starting your "message_body" workout now!', action='/endworkout', method='POST')     
+        # response.message('Good to see you again username, starting your "message_body" workout now!', action='/endworkout', method='POST')
         return str('Good to see you again!')
 # Boilerplate
 @app.route('/onboarding', methods=['POST'])
@@ -54,9 +53,8 @@ def workout():
 
     if request.method == 'POST':
         if user.is_working_out:
-            ipdb.set_trace()
                 # TODO: Should we use filter or filter_by from SQLalchemy?
-                # Find active work out status 
+                # Find active work out status
             active_workout=filter(check_workout_status, user.logged_workouts)
             print(active_workout[0])
             active_workout[0].end_time=datetime.datetime.now()
@@ -76,5 +74,5 @@ def end_workout():
     print(request.form)
     # response = MessagingResponse()
     # response.message('Great workout! You worked out for x amount of time! Come back soon!')
-    # TODO: Update database; logged workout needs an end time 
+    # TODO: Update database; logged workout needs an end time
     return str('Great workout! You worked out for x amount of time! Come back soon!')
