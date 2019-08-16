@@ -30,7 +30,7 @@ class Workout(db.Model):
     is_flexibility = db.Column(db.Boolean)
 
     def __repr__(self):
-        return '<Workout %r>' % (self.workouts)    
+        return '<Workout %r>' % (self.workouts)
 
 class LoggedWorkout(db.Model):
     __tablename__ = 'loggedworkout'
@@ -41,6 +41,7 @@ class LoggedWorkout(db.Model):
     # Uses Python's DateTime object to log the date and time
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
+    workout_type = db.Column(db.String(64))
 
     def __repr__(self):
-        return '<LoggedWorkout %r>' % (self.loggedworkout)    
+        return '<LoggedWorkout %r>' % (self.workout_type)    
